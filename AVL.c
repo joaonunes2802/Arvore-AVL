@@ -38,8 +38,7 @@ void inserir(elemento *raiz, int dado){
         }
     }while(aux != 1);
 }
-void inserElemento();
-int calculAltura(); 
+int calculAlturaEsq(elemento *raiz); 
 void rotDir();
 void rotEsq();
 
