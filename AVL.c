@@ -69,7 +69,13 @@ void rotEsq(elemento *no){
     no = p;
 }
 
-
 int main(){
+    elemento *raiz = NULL;
+    iserir(&raiz, 8);
+    iserir(&raiz, 4);
+    iserir(&raiz, 10);
+    iserir(&raiz, 9);
+    iserir(&raiz, 15);
+    iserir(&raiz, 12);
     return 0;
 }
