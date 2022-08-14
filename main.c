@@ -24,7 +24,15 @@ int fbNULLEsq(no *p1);
 
 int main() {
     no *p=NULL;
-    int high, aux;
+    int high;
+    /*
+    inserir(&p, 8);
+    inserir(&p, 4);
+    inserir(&p, 10);
+    inserir(&p, 2);
+    inserir(&p, 6);
+    inserir(&p, 5);
+
     inserir(&p, 8);
     inserir(&p, 2);
     inserir(&p, 15);
@@ -32,7 +40,15 @@ int main() {
     inserir(&p, 20);
     inserir(&p, 17);
     preOrder(p);
-    printf("\n");
+    */
+
+    inserir(&p, 8);
+    inserir(&p, 4);
+    inserir(&p, 10);
+    inserir(&p, 9);
+    inserir(&p, 15);
+    inserir(&p, 12);
+    preOrder(p);
     high=altura(p);
     printf("\n\n%d", high);
     return 0;
@@ -77,7 +93,7 @@ int fb(no *p1, no *p2){
 
 int fbNULLEsq(no *p1){
     int fb;
-    fb= altura(p1)- 0;
+    fb= altura(p1)-0;
     return fb;
 }
 
@@ -154,9 +170,9 @@ void rotacoesInsercoes(no **p) {// supondo que aux = 1 ou 2
     no *t;
     int fb1, fb2;
     if ((*p)->dir == NULL) {
-        fb1 = fbNULLDir((*p)->esq);
+        fb1 = fbNULLDir((*p));
     } else if ((*p)->esq == NULL) {
-        fb1 = fbNULLEsq((*p)->dir);
+        fb1 = fbNULLEsq((*p));
     } else {
         fb1 = fb((*p)->dir, (*p)->esq);
     }
@@ -165,13 +181,27 @@ void rotacoesInsercoes(no **p) {// supondo que aux = 1 ou 2
         else {
             if (fb1 == -2) {
                 t = (*p)->esq;
-                fb2 = fb(t->dir, t->esq);
+                if(t->dir==NULL){
+                    fb2= fbNULLDir(t);
+;                }
+                else if(t->esq==NULL){
+                    fb2= fbNULLEsq(t);
+                }
+                else
+                    fb2 = fb(t->dir, t->esq);
             } else if (fb1 == 2) {
                 t = (*p)->dir;
-                fb2 = fb(t->dir, t->esq);
+                if(t->dir==NULL){
+                    fb2= fbNULLDir(t);
+                }
+                else if(t->esq==NULL){
+                    fb2= fbNULLEsq(t);
+                }
+                else
+                    fb2 = fb(t->dir, t->esq);
             }
             if (((fb1 - 1) == fb2) || (fb1 + 1) == fb2) {
-                if (fb > 0)
+                if (fb1 > 0)
                     rot_esq(&(*p));
                 else
                     rot_dir(&(*p));
