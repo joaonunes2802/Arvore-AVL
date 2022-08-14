@@ -12,24 +12,25 @@ void rot_dir(no **p);
 void rot_esq(no  **p);
 no *rot_esq_dir(no *p);
 no *rot_dir_esq(no *p);
-void inserir(no **p, int di);
+int inserir(no **p, int di);
 void preOrder(no *p);
 int fb(no *p1, no *p2);
 int maior(int a, int b);
 int altura(no *p);
+void rotacoesInsercoes(no **p, int aux);
 
 
 int main() {
     no *p=NULL;
-    int high;
+    int high, aux;
     inserir(&p, 8);
     inserir(&p, 4);
     inserir(&p, 10);
     inserir(&p, 2);
     inserir(&p, 6);
-    inserir(&p, 5);
+    aux=inserir(&p, 5);
     preOrder(p);
-    p=rot_esq_dir(p);
+    rotacoesInsercoes(&p, aux);
     printf("\n");
     preOrder(p);
     high=altura(p);
@@ -68,10 +69,15 @@ no  *rot_dir_esq(no *p){
     return p;
 }
 
-void inserir(no **p, int di){
-    no *q, *t;
-    int aux=0, fb1,fb2;
+int fb(no *p1, no *p2){
+    int fb;
+    fb= altura(p1)- altura(p2);
+    return fb;
+}
 
+int inserir(no **p, int di){
+    no *q, *t;
+    int aux=0;
     q = (no *) malloc(sizeof(no));
     if(*p==NULL){
         q->dado=di;
@@ -105,22 +111,11 @@ void inserir(no **p, int di){
                 }
             }
         }
-        /*if (aux == 1)
-            fb1=fb(*p, (*p)->esq);
-        else
-            fb2=fb(*p,(*p)->dir);
-*/
+
     }
-
-
-
+    return aux;
 }
 
-int fb(no *p1, no *p2){
-    int fb;
-    fb= altura(p1)- altura(p2);
-    return fb;
-}
 
 void preOrder(no *p){
     if(p!=NULL) {
@@ -144,4 +139,27 @@ int altura(no *p){
         return 1 + maior(altura(p->esq), altura(p->dir));
 }
 
-
+void rotacoesInsercoes(no **p, int aux) {// supondo que aux = 1 ou 2
+    no *t;
+    int fb1, fb2;
+    fb1=fb((*p)->dir, (*p)->esq);
+    if (fb1 ==-2) {
+        t = (*p)->esq;
+        fb2 = fb(t->dir, t->esq);
+    } else {
+        t = (*p)->dir;
+        fb2 = fb(t->dir, t->esq);
+    }
+    if (((fb1 - 1) == fb2) || (fb1 + 1) == fb2) {
+        if (fb > 0)
+            rot_esq(&(*p));
+        else
+            rot_dir(&(*p));
+    } else{
+        if(fb2>0){
+            *p=rot_esq_dir(*p);
+        }
+        else
+            *p=rot_dir_esq(*p);
+    }
+}
