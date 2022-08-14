@@ -134,7 +134,7 @@ void inserir(elemento **raiz, int dado){
 int main(){
     elemento *raiz = NULL;
     int n[6] = {8,4,10,9,15,12};
-    int n2[6] = {2,4,5,6,8,10};
+    int n2[6] = {2,5,8,10,4,6};
     
 
     for(int i = 0 ; i < 7; i++){
