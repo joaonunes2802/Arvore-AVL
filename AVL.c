@@ -3,13 +3,14 @@
 
 typedef struct no{
     int conteudo;
+    int altura;
     struct no *filhoEsq;
     struct no *filhoDir;
 }elemento;
 
 int altura(elemento *raiz){
-    if ((raiz == NULL) || (raiz->filhoEsq== NULL && raiz->filhoDir== NULL)){
-        return 0;
+    if ((raiz == NULL) /*|| (raiz->filhoEsq== NULL && raiz->filhoDir== NULL)*/){
+        return -1;
     }
     int altura_esq = altura(raiz->filhoEsq);
     int altura_dir = altura(raiz->filhoDir);
@@ -21,22 +22,22 @@ int altura(elemento *raiz){
         return(altura_dir +1);
     }
 }
-void rotDir(elemento **no){
+void rotDir(elemento *no){
     elemento *p = NULL, *aux = NULL;
-    p = (*no)->filhoEsq;
+    p = no->filhoEsq;
     aux = p->filhoDir;
-    p->filhoDir = *no;
-    (*no)->filhoEsq = aux;
-    *no = p;
+    p->filhoDir = no;
+    no->filhoEsq = aux;
+    no = p;
 }
 
-void rotEsq(elemento **no){
+void rotEsq(elemento *no){
     elemento *p =   NULL, *aux = NULL;
-    p = (*no)->filhoDir;
+    p = no->filhoDir;
     aux = p->filhoEsq;
-    p->filhoEsq = (*no);
-    (*no)->filhoDir = aux;
-    (*no) = p;
+    p->filhoEsq = no;
+    no->filhoDir = aux;
+    no = p;
 }
 
 void *rotDirEsq(elemento *no){
@@ -50,7 +51,15 @@ void *rotEsqDir(elemento *no){
 }
 
 int fb(elemento *no){
-    return altura(no->filhoEsq) - altura(no->filhoDir);
+    if(no->filhoDir == NULL && no->filhoEsq != NULL){
+        return (no->filhoEsq->altura);
+    }else if(no->filhoEsq == NULL && no->filhoDir != NULL){
+        return (-(no->filhoDir->altura));
+    }else if(no->filhoDir == NULL && no->filhoEsq == NULL){
+        return 0;
+    }else if(no->filhoDir != NULL && no->filhoEsq != NULL){
+        return (no->filhoEsq->altura - no->filhoDir->altura);
+    }
 }
 
 /*int inserir(elemento **raiz, int dado){
@@ -129,115 +138,41 @@ void inserir(elemento **raiz, int dado){
 
 }
 
-void preOrderBalanceamento(elemento *raiz)
+void preOrderAltura(elemento *raiz)
 {
-    if (raiz != NULL)
-    {
-        if(((fb(raiz->filhoDir) == 1 || fb(raiz->filhoDir) == -1) && (fb(raiz->filhoEsq) == 1 || fb(raiz->filhoEsq) == -1))){
-            int fator = fb(raiz);
-            //int fator2 = fb(raiz->filhoEsq);
-            //int fator3 = fb(raiz->filhoDir);
-            if(fator >= 2 && raiz->filhoDir == NULL){
-                int fator2 = fb(raiz->filhoEsq);
-                if (fator2 == 1){
-                    rotDir(raiz);
-                }else if(fator2 == -1){
-                    rotEsq(raiz->filhoEsq);
-                    rotDir(raiz);
-                }
+    if(raiz != NULL){
+        raiz->altura = altura(raiz);
+        preOrderAltura(raiz->filhoEsq);
+        preOrderAltura(raiz->filhoDir);
+    }
+}
+
+void preOrderBalanceamento(elemento *raiz){
+    int balanceada = 0;
+    if(raiz != NULL){
+        int fator = fb(raiz);
+        if(fator >= 2){
+            int fator2 = fb(raiz->filhoEsq);
+            if(fator2 >= 0){
+                rotDir(raiz);
+                balanceada = 1;
+            }else if(fator2 < 0){
+                rotEsq(raiz->filhoEsq);
+                rotDir(raiz);
+                balanceada = 1;
             }
-            else if (fator <= -2 && raiz->filhoDir == NULL){
-                int fator2 = fb(raiz->filhoEsq);
-                if (fator2 == 1)
-                {
-                    rotDir(raiz->filhoEsq);
-                    rotEsq(raiz);
-                }
-                else if (fator2 == -1)
-                {
-                    rotEsq(raiz);
-                }
+        }else if(fator <= -2){
+            int fator2 = fb(raiz->filhoDir);
+            if(fator2 >= 0){
+                rotDir(raiz->filhoDir);
+                rotEsq(raiz);
+                balanceada = 1;
+            }else if(fator2 < 0){
+                rotEsq(raiz);
+                balanceada = 1;
             }
-            else if (fator >= 2 && raiz->filhoEsq == NULL){
-                int fator3 = fb(raiz->filhoDir);
-                if (fator3 == 1)
-                {
-                    rotDir(raiz);
-                }
-                else if (fator3 == -1)
-                {
-                    rotEsq(raiz->filhoDir);
-                    rotDir(raiz);
-                }
-            }
-            else if (fator <= -2 && raiz->filhoEsq == NULL){
-                int fator3 = fb(raiz->filhoDir);
-                if (fator3 == 1)
-                {
-                    rotDir(raiz->filhoDir);
-                    rotEsq(raiz);
-                }
-                else if (fator3 == -1)
-                {
-                    rotEsq(raiz);
-                }
-            }else if(fator >= 2 && (raiz->filhoDir != NULL && raiz->filhoEsq != NULL)){
-                int fator3 = fb(raiz->filhoDir);
-                int fator2 = fb(raiz->filhoEsq);
-                if (fator2 == 1 && fator3 == 1){
-                    rotDir(raiz);
-                }
-                else if (fator2 == -1){
-                    rotEsq(raiz->filhoEsq);
-                    rotDir(raiz);
-                }
-                else if (fator3 == -1){
-                    rotEsq(raiz->filhoDir);
-                    rotDir(raiz);
-                }
-            }
-            else if (fator <= -2 && (raiz->filhoDir != NULL && raiz->filhoEsq != NULL)){
-                int fator3 = fb(raiz->filhoDir);
-                int fator2 = fb(raiz->filhoEsq);
-                if (fator2 == -1 && fator3 == -1){
-                    rotEsq(raiz);
-                }else if(fator2 == 1){
-                    rotDir(raiz->filhoEsq);
-                    rotEsq(raiz);
-                }else if(fator3 == 1){
-                    rotDir(raiz->filhoDir);
-                    rotEsq(raiz);
-                }
-            }
-                /*if (fator >= 2 && (fator2 == 1 && fator3 == 1))
-                {
-                    rotDir(raiz);
-                }
-                else if (fator <= -2 && (fator2 == -1 && fator3 == -1))
-                {
-                    rotEsq(raiz);
-                }
-                else if (fator >= 2 && fator2 == -1)
-                {
-                    rotEsq(raiz->filhoEsq);
-                    rotDir(raiz);
-                }
-                else if (fator <= -2 && fator2 == 1)
-                {
-                    rotDir(raiz->filhoEsq);
-                    rotEsq(raiz);
-                }
-                else if (fator >= 2 && fator3 == -1)
-                {
-                    rotEsq(raiz->filhoDir);
-                    rotDir(raiz);
-                }
-                else if (fator <= -2 && fator3 == 1)
-                {
-                    rotDir(raiz->filhoDir);
-                    rotEsq(raiz);
-                }*/
-        }else{
+        }
+        if(balanceada == 0){
             preOrderBalanceamento(raiz->filhoEsq);
             preOrderBalanceamento(raiz->filhoDir);
         }
