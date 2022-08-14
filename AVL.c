@@ -7,23 +7,6 @@ typedef struct no{
     struct no *filhoDir;
 }elemento;
 
-/*void inserir(elemento **raiz, int dado){
-    if(*raiz == NULL){
-        *raiz = (elemento *) malloc(sizeof(elemento));
-        (*raiz)->conteudo = dado;
-        (*raiz)->filhoDir = NULL;
-        (*raiz)->filhoEsq = NULL;
-    }else if(dado > (*raiz)->conteudo){
-        inserir(&((*raiz)->filhoDir), dado);
-    }else if(dado <= (*raiz)->conteudo){
-        inserir(&((*raiz)->filhoEsq), dado);
-    }
-    elemento *verify = *raiz;
-    
-}*/ 
-
-
-
 int altura(elemento *raiz){
     if ((raiz == NULL) || (raiz->filhoEsq== NULL && raiz->filhoDir== NULL)){
         return 0;
@@ -67,10 +50,10 @@ void *rotEsqDir(elemento *no){
 }
 
 int fb(elemento *no){
-    return abs(altura(no->filhoEsq) - altura(no->filhoDir));
+    return altura(no->filhoEsq) - altura(no->filhoDir);
 }
 
-int inserir(elemento **raiz, int dado){
+/*int inserir(elemento **raiz, int dado){
     int res;
     if(*raiz == NULL){//árvore vazia ou nó folha
         elemento *novo;
@@ -112,7 +95,40 @@ int inserir(elemento **raiz, int dado){
     }
 
     return res;
+}*/
+
+void inserir(elemento **raiz, int dado){
+    if(*raiz == NULL){
+        *raiz = (elemento *) malloc(sizeof(elemento));
+        (*raiz)->conteudo = dado;
+        (*raiz)->filhoDir = NULL;
+        (*raiz)->filhoEsq = NULL;
+    }
+    else if(dado > (*raiz)->conteudo){
+        inserir(&((*raiz)->filhoDir), dado);
+    }
+    else if(dado <= (*raiz)->conteudo){
+        inserir(&((*raiz)->filhoEsq), dado);
+    }
+    
+    int fator = fb(*raiz);
+    
+    if (fator > 1 && dado < (*raiz)->filhoEsq->conteudo)
+        rotDir((raiz));
+
+    else if (fator < -1 && dado > (*raiz)->filhoDir->conteudo)
+        rotEsq((raiz));
+
+    else if (fator > 1 && dado > (*raiz)->filhoEsq->conteudo) {
+        rotEsqDir(*raiz);
+    }
+
+    else if (fator < -1 && dado < (*raiz)->filhoDir->conteudo) {
+        rotDirEsq(*raiz);
+  }
+
 }
+
 
 
 int main(){
@@ -122,7 +138,7 @@ int main(){
     
 
     for(int i = 0 ; i < 7; i++){
-        inserir(&raiz, n[i]);
+        inserir(&raiz, n2[i]);
     }
 
 
