@@ -12,27 +12,27 @@ void rot_dir(no **p);
 void rot_esq(no  **p);
 no *rot_esq_dir(no *p);
 no *rot_dir_esq(no *p);
-int inserir(no **p, int di);
+void inserir(no **p, int di);
 void preOrder(no *p);
 int fb(no *p1, no *p2);
 int maior(int a, int b);
 int altura(no *p);
-void rotacoesInsercoes(no **p, int aux);
+void rotacoesInsercoes(no **p);
+int fbNULLDir(no *p1);
+int fbNULLEsq(no *p1);
 
 
 int main() {
     no *p=NULL;
     int high, aux;
     inserir(&p, 8);
-    inserir(&p, 4);
-    inserir(&p, 10);
     inserir(&p, 2);
-    inserir(&p, 6);
-    aux=inserir(&p, 5);
+    inserir(&p, 15);
+    inserir(&p, 9);
+    inserir(&p, 20);
+    inserir(&p, 17);
     preOrder(p);
-    rotacoesInsercoes(&p, aux);
     printf("\n");
-    preOrder(p);
     high=altura(p);
     printf("\n\n%d", high);
     return 0;
@@ -75,7 +75,19 @@ int fb(no *p1, no *p2){
     return fb;
 }
 
-int inserir(no **p, int di){
+int fbNULLEsq(no *p1){
+    int fb;
+    fb= altura(p1)- 0;
+    return fb;
+}
+
+int fbNULLDir(no *p1){
+    int fb;
+    fb= 0- altura(p1);
+    return fb;
+}
+
+void inserir(no **p, int di){
     no *q, *t;
     int aux=0;
     q = (no *) malloc(sizeof(no));
@@ -111,9 +123,8 @@ int inserir(no **p, int di){
                 }
             }
         }
-
+        rotacoesInsercoes(&*p);
     }
-    return aux;
 }
 
 
@@ -139,27 +150,36 @@ int altura(no *p){
         return 1 + maior(altura(p->esq), altura(p->dir));
 }
 
-void rotacoesInsercoes(no **p, int aux) {// supondo que aux = 1 ou 2
+void rotacoesInsercoes(no **p) {// supondo que aux = 1 ou 2
     no *t;
     int fb1, fb2;
-    fb1=fb((*p)->dir, (*p)->esq);
-    if (fb1 ==-2) {
-        t = (*p)->esq;
-        fb2 = fb(t->dir, t->esq);
+    if ((*p)->dir == NULL) {
+        fb1 = fbNULLDir((*p)->esq);
+    } else if ((*p)->esq == NULL) {
+        fb1 = fbNULLEsq((*p)->dir);
     } else {
-        t = (*p)->dir;
-        fb2 = fb(t->dir, t->esq);
+        fb1 = fb((*p)->dir, (*p)->esq);
     }
-    if (((fb1 - 1) == fb2) || (fb1 + 1) == fb2) {
-        if (fb > 0)
-            rot_esq(&(*p));
-        else
-            rot_dir(&(*p));
-    } else{
-        if(fb2>0){
-            *p=rot_esq_dir(*p);
+    if ((fb1 == 0) || (fb1 == 1) || fb1 == -1) {
+    }
+        else {
+            if (fb1 == -2) {
+                t = (*p)->esq;
+                fb2 = fb(t->dir, t->esq);
+            } else if (fb1 == 2) {
+                t = (*p)->dir;
+                fb2 = fb(t->dir, t->esq);
+            }
+            if (((fb1 - 1) == fb2) || (fb1 + 1) == fb2) {
+                if (fb > 0)
+                    rot_esq(&(*p));
+                else
+                    rot_dir(&(*p));
+            } else {
+                if (fb2 > 0) {
+                    *p = rot_esq_dir(*p);
+                } else
+                    *p = rot_dir_esq(*p);
+            }
         }
-        else
-            *p=rot_dir_esq(*p);
-    }
 }
