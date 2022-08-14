@@ -143,7 +143,7 @@ int main(){
     elemento *raiz = NULL, *raiz2 = NULL, *raiz3 = NULL;
     int n[6] = {8,4,10,9,15,12};
     int n2[6] = {8,4,10,2,6,5};
-    int n3[]={8,2,15,9,20,17};
+    int n3[6]={8,2,15,9,20,17};
     for(int i = 0 ; i < 7; i++){
         inserir(&raiz, n[i]);
     }
