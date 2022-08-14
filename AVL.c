@@ -57,7 +57,7 @@ void rotEsq(elemento **no){
 }
 
 void *rotDirEsq(elemento *no){
-    rotEsq(&no->filhoDir);
+    rotEsq(&no->filhoEsq);
     rotDir(&no);
 }
 
@@ -118,8 +118,10 @@ int inserir(elemento **raiz, int dado){
 int main(){
     elemento *raiz = NULL;
     int n[6] = {8,4,10,9,15,12};
+    int n2[6] = {2,4,5,6,8,10};
+    
 
-    for(int i = 0 ; i < 6; i++){
+    for(int i = 0 ; i < 7; i++){
         inserir(&raiz, n[i]);
     }
 
