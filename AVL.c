@@ -129,18 +129,42 @@ void inserir(elemento **raiz, int dado){
 
 }
 
-
+void preOrder(elemento *p)
+{
+    if (p != NULL)
+    {
+        printf("%d\n", p->conteudo);
+        preOrder(p->filhoEsq);
+        preOrder(p->filhoDir);
+    }
+}
 
 int main(){
-    elemento *raiz = NULL;
+    elemento *raiz = NULL, *raiz2 = NULL, *raiz3 = NULL;
     int n[6] = {8,4,10,9,15,12};
-    int n2[6] = {2,5,8,10,4,6};
-    
-
+    int n2[6] = {8,4,10,2,6,5};
+    int n3[]={8,2,15,9,20,17};
     for(int i = 0 ; i < 7; i++){
-        inserir(&raiz, n2[i]);
+        inserir(&raiz, n[i]);
     }
 
+    for (int i = 0; i < 7; i++)
+    {
+        inserir(&raiz2, n2[i]);
+    }
 
+    for (int i = 0; i < 7; i++)
+    {
+        inserir(&raiz3, n3[i]);
+    }
+
+    printf("\nImprimindo a arvore n já balanceada\n");
+    preOrder(raiz);
+
+    printf("\nImprimindo a arvore n2 já balanceada\n");
+    preOrder(raiz2);
+
+    printf("\nImprimindo a arvore n3 já balanceada\n");
+    preOrder(raiz3);
     return 0;
 }
