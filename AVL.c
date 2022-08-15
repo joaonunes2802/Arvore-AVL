@@ -8,59 +8,83 @@ typedef struct no{
     struct no *filhoDir;
 }elemento;
 
-int altura(elemento *raiz){
-    if ((raiz == NULL) /*|| (raiz->filhoEsq== NULL && raiz->filhoDir== NULL)*/){
-        return -1;
-    }
-    int altura_esq = altura(raiz->filhoEsq);
-    int altura_dir = altura(raiz->filhoDir);
+int altura(elemento *p);
+void rotDir(elemento **p);
+void rotEsq(elemento  **p);
+elemento *rotDirEsq(elemento *no);
+elemento *rotEsqDir(elemento *no);
+int maior(int a, int b);
+int altura(elemento *p);
+int fb(elemento *p1, elemento *p2);
+int fbNULLEsq(elemento *p1);
+int fbNULLDir(elemento *p1);
+void inserir(elemento **raiz, int dado);
+void preOrderBalanceamento(elemento **p);
 
-    if(altura_esq > altura_dir){
-        return(altura_esq +1);
-    }
-    else{
-        return(altura_dir +1);
-    }
-}
-void rotDir(elemento *no){
-    elemento *p = NULL, *aux = NULL;
-    p = no->filhoEsq;
-    aux = p->filhoDir;
-    p->filhoDir = no;
-    no->filhoEsq = aux;
-    no = p;
-}
-
-void rotEsq(elemento *no){
-    elemento *p =   NULL, *aux = NULL;
-    p = no->filhoDir;
-    aux = p->filhoEsq;
-    p->filhoEsq = no;
-    no->filhoDir = aux;
-    no = p;
+void rotDir(elemento **p){
+elemento *q, *temp;
+q = (*p)->filhoEsq;
+temp = q->filhoDir;
+q->filhoDir = *p;
+(*p)->filhoEsq = temp;
+*p = q;
 }
 
-void *rotDirEsq(elemento *no){
-    rotEsq(&no->filhoEsq);
-    rotDir(&no);
+
+void rotEsq(elemento  **p){
+    elemento *q, *temp;
+    q = (*p)->filhoDir;
+    temp = q->filhoEsq;
+    q->filhoEsq = *p;
+    (*p)->filhoDir = temp;
+    *p = q;
 }
 
-void *rotEsqDir(elemento *no){
-    rotDir(&no->filhoDir);
-    rotEsq(&no);
+elemento *rotEsqDir(elemento *p){
+    rotEsq(&p->filhoEsq);
+    rotDir(&p);
+    return p;
 }
 
-int fb(elemento *no){
-    if(no->filhoDir == NULL && no->filhoEsq != NULL){
-        return (no->filhoEsq->altura);
-    }else if(no->filhoEsq == NULL && no->filhoDir != NULL){
-        return (-(no->filhoDir->altura));
-    }else if(no->filhoDir == NULL && no->filhoEsq == NULL){
+elemento  *rotDirEsq(elemento *p){
+    rotDir(&p->filhoDir);
+    rotEsq(&p);
+    return p;
+}
+
+int maior(int a, int b){
+    if(a > b)
+        return a;
+    else
+        return b;
+}
+
+int altura(elemento *p){
+    if((p == NULL) || (p->filhoEsq== NULL && p->filhoDir== NULL))
         return 0;
-    }else if(no->filhoDir != NULL && no->filhoEsq != NULL){
-        return (no->filhoEsq->altura - no->filhoDir->altura);
-    }
+    else
+        return 1 + maior(altura(p->filhoEsq), altura(p->filhoDir));
 }
+
+
+int fb(elemento *p1, elemento *p2){
+    int fb;
+    fb= altura(p1)- altura(p2);
+    return fb;
+}
+
+int fbNULLEsq(elemento *p1){
+    int fb;
+    fb= altura(p1)-0;
+    return fb;
+}
+
+int fbNULLDir(elemento *p1){
+    int fb;
+    fb= 0- altura(p1);
+    return fb;
+}
+
 
 /*int inserir(elemento **raiz, int dado){
     int res;
@@ -119,6 +143,7 @@ void inserir(elemento **raiz, int dado){
     else if(dado <= (*raiz)->conteudo){
         inserir(&((*raiz)->filhoEsq), dado);
     }
+    preOrderBalanceamento(&(*raiz));
     
     /*int fator = fb(*raiz);
     
@@ -138,63 +163,62 @@ void inserir(elemento **raiz, int dado){
 
 }
 
-void preOrderAltura(elemento *raiz)
-{
-    if(raiz != NULL){
-        raiz->altura = altura(raiz);
-        preOrderAltura(raiz->filhoEsq);
-        preOrderAltura(raiz->filhoDir);
+void preOrderBalanceamento(elemento **p) {// supondo que aux = 1 ou 2
+    elemento *t;
+    int fb1, fb2;
+    if ((*p)->filhoDir == NULL) {
+        fb1 = fbNULLDir((*p));
+    } else if ((*p)->filhoEsq == NULL) {
+        fb1 = fbNULLEsq((*p));
+    } else {
+        fb1 = fb((*p)->filhoDir, (*p)->filhoEsq);
     }
-}
-
-void preOrderBalanceamento(elemento *raiz){
-    int balanceada = 0;
-    if(raiz != NULL){
-        int fator = fb(raiz);
-        if(fator >= 2){
-            int fator2 = fb(raiz->filhoEsq);
-            if(fator2 >= 0){
-                rotDir(raiz);
-                balanceada = 1;
-            }else if(fator2 < 0){
-                rotEsq(raiz->filhoEsq);
-                rotDir(raiz);
-                balanceada = 1;
+    if ((fb1 == 0) || (fb1 == 1) || fb1 == -1) {
+    }
+        else {
+            if (fb1 == -2) {
+                t = (*p)->filhoEsq;
+                if(t->filhoDir==NULL){
+                    fb2= fbNULLDir(t);
+;                }
+                else if(t->filhoEsq==NULL){
+                    fb2= fbNULLEsq(t);
+                }
+                else
+                    fb2 = fb(t->filhoDir, t->filhoEsq);
+            } else if (fb1 == 2) {
+                t = (*p)->filhoDir;
+                if(t->filhoDir==NULL){
+                    fb2= fbNULLDir(t);
+                }
+                else if(t->filhoEsq==NULL){
+                    fb2= fbNULLEsq(t);
+                }
+                else
+                    fb2 = fb(t->filhoDir, t->filhoEsq);
             }
-        }else if(fator <= -2){
-            int fator2 = fb(raiz->filhoDir);
-            if(fator2 >= 0){
-                rotDir(raiz->filhoDir);
-                rotEsq(raiz);
-                balanceada = 1;
-            }else if(fator2 < 0){
-                rotEsq(raiz);
-                balanceada = 1;
+            if (((fb1 - 1) == fb2) || (fb1 + 1) == fb2) {
+                if (fb1 > 0)
+                    rotEsq(&(*p));
+                else
+                    rotDir(&(*p));
+            } else {
+                if (fb2 > 0) {
+                    *p = rotEsqDir(*p);
+                } else
+                    *p = rotDirEsq(*p);
             }
         }
-        if(balanceada == 0){
-            preOrderBalanceamento(raiz->filhoEsq);
-            preOrderBalanceamento(raiz->filhoDir);
-        }
-    }
 }
 
-void preOrderImprimindo(elemento *p)
-{
-    if (p != NULL)
-    {
-        printf("%d\n", p->conteudo);
-        preOrderImprimindo(p->filhoEsq);
-        preOrderImprimindo(p->filhoDir);
-    }
-}
+
 
 int main(){
     elemento *raiz = NULL, *raiz2 = NULL, *raiz3 = NULL;
     int n[6] = {8,4,10,9,15,12};
     int n2[6] = {8,4,10,2,6,5};
     //int n3[6]={8,2,15,9,20,17};
-    for(int i = 0 ; i < 7; i++){
+    for(int i = 0 ; i < 6; i++){
         inserir(&raiz, n[i]);
     }
 
@@ -208,12 +232,6 @@ int main(){
         inserir(&raiz3, n3[i]);
     }*/
 
-    printf("\nImprimindo a arvore n ja balanceada\n");
-    preOrderBalanceamento(raiz);
-    preOrderImprimindo(raiz);
-
-    printf("\nImprimindo a arvore n2 ja balanceada\n");
-    preOrderBalanceamento(raiz2);
-    preOrderImprimindo(raiz2);
+    
     return 0;
 }
