@@ -20,6 +20,7 @@ int fbNULLEsq(elemento *p1);
 int fbNULLDir(elemento *p1);
 void inserir(elemento **raiz, int dado);
 void preOrderBalanceamento(elemento **p);
+void preOrderImprimindo(elemento *p);
 
 void rotDir(elemento **p){
 elemento *q, *temp;
@@ -85,51 +86,6 @@ int fbNULLDir(elemento *p1){
     return fb;
 }
 
-
-/*int inserir(elemento **raiz, int dado){
-    int res;
-    if(*raiz == NULL){//árvore vazia ou nó folha
-        elemento *novo;
-        novo = (elemento*)malloc(sizeof(elemento));
-        if(novo == NULL)
-            return 0;
-
-        novo->conteudo = dado;
-        
-        novo->filhoEsq = NULL;
-        novo->filhoDir = NULL;
-        *raiz = novo;
-        return 1;
-    }
-
-    elemento *atual = *raiz;
-    if(dado < atual->conteudo){
-        if((res = inserir(&(atual->filhoEsq), dado)) == 1){
-            if(fb(atual) >= 2){
-                if(dado < (*raiz)->filhoEsq->conteudo ){
-                    rotDir(raiz);
-                }else{
-                    rotDirEsq(*raiz);
-                }
-            }
-        }
-    }else{
-        if(dado > atual->conteudo){
-            if((res = inserir(&(atual->filhoDir), dado)) == 1){
-                if(fb(atual) >= 2){
-                    if((*raiz)->filhoDir->conteudo < dado){
-                        rotEsq(raiz);
-                    }else{
-                        rotEsqDir(*raiz);
-                    }
-                }
-            }
-        }
-    }
-
-    return res;
-}*/
-
 void inserir(elemento **raiz, int dado){
     if(*raiz == NULL){
         *raiz = (elemento *) malloc(sizeof(elemento));
@@ -144,23 +100,16 @@ void inserir(elemento **raiz, int dado){
         inserir(&((*raiz)->filhoEsq), dado);
     }
     preOrderBalanceamento(&(*raiz));
-    
-    /*int fator = fb(*raiz);
-    
-    if (fator > 1 && dado < (*raiz)->filhoEsq->conteudo)
-        rotDir((raiz));
 
-    else if (fator < -1 && dado > (*raiz)->filhoDir->conteudo)
-        rotEsq((raiz));
-
-    else if (fator > 1 && dado > (*raiz)->filhoEsq->conteudo) {
-        rotEsqDir(*raiz);
+}
+void preOrderImprimindo(elemento *p)
+{
+    if (p != NULL)
+    {
+        printf("%d\n", p->conteudo);
+        preOrderImprimindo(p->filhoEsq);
+        preOrderImprimindo(p->filhoDir);
     }
-
-    else if (fator < -1 && dado < (*raiz)->filhoDir->conteudo) {
-        rotDirEsq(*raiz);
-  }*/
-
 }
 
 void preOrderBalanceamento(elemento **p) {// supondo que aux = 1 ou 2
@@ -217,21 +166,29 @@ int main(){
     elemento *raiz = NULL, *raiz2 = NULL, *raiz3 = NULL;
     int n[6] = {8,4,10,9,15,12};
     int n2[6] = {8,4,10,2,6,5};
-    //int n3[6]={8,2,15,9,20,17};
+    int n3[6] = {8,2,15,9,20,17};
+    
     for(int i = 0 ; i < 6; i++){
         inserir(&raiz, n[i]);
     }
 
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < 6; i++)
     {
         inserir(&raiz2, n2[i]);
     }
 
-    /*for (int i = 0; i < 7; i++)
+    for (int i = 0; i < 6; i++)
     {
         inserir(&raiz3, n3[i]);
-    }*/
+    }
 
-    
+    printf("\nImprimindo a arvore n ja balanceada\n");
+    preOrderImprimindo(raiz);
+
+    printf("\nImprimindo a arvore n2 ja balanceada\n");
+    preOrderImprimindo(raiz2);
+
+    printf("\nImprimindo a arvore n3 ja balanceada\n");
+    preOrderImprimindo(raiz3);
     return 0;
 }
